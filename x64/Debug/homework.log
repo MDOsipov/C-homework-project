@@ -1,8 +1,9 @@
 ﻿  homework.c
-C:\masa\С\homework\homework\homework.c(126,15): warning C4244: return: преобразование "WPARAM" в "int", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(345,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(352,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(352,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(356,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(356,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(132,15): warning C4244: return: преобразование "WPARAM" в "int", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(353,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(360,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(360,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(364,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(364,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(409,23): warning C4305: +=: усечение из "double" в "float"
   homework.vcxproj -> C:\masa\С\homework\x64\Debug\homework.exe

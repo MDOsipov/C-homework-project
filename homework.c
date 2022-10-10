@@ -48,6 +48,10 @@ void GenerateFruit();
 void AddFruit(float xPos, float yPos);
 BOOL ObjectCollision(TObject o1, TObject o2);
 void DelFruits();
+void UpdateSpeed();
+
+// Overall score
+int score = 0;
 
 RECT rect;
 // Create our snake
@@ -57,6 +61,8 @@ PObject fruits = NULL;
 int fruitsCnt = 0; // The current number of fruits
 BOOL startNewGame = FALSE;
 float snakeSpeed = 2;
+
+
 
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -170,6 +176,7 @@ void WinInit()
     startNewGame = FALSE;
     fruitsCnt = 0;
     fruits = NULL;
+    snakeSpeed = 2;
     SnakeInit();
 }
 
@@ -284,6 +291,7 @@ void WinShow(HDC dc)
         ObjectShow(fruits[i], memDC);
         if (ObjectCollision(fruits[i], *(snake.parts)))
         {
+            score++;
             fruits[i].isDel = TRUE;
         }
         
@@ -346,7 +354,7 @@ void GenerateFruit()
     int xPos = FRAME_LEFT_X + rand() % FRAME_WIDTH;
     int yPos = FRAME_UPPER_Y + rand() % FRAME_HEIGHT;   
 
-    int k = rand() % 15;
+    int k = rand() % 7;
     if (k == 1)
     {
         AddFruit(xPos, yPos);
@@ -378,13 +386,25 @@ BOOL ObjectCollision(TObject o1, TObject o2)
 
 void DelFruits()
 {
+    int del_cntr = 0;
     for (int i = 0; i < fruitsCnt; i++)
     {
         if (fruits[i].isDel)
         {
+            del_cntr++;
             fruitsCnt--;
             fruits[i] = fruits[fruitsCnt];
             fruits = realloc(fruits, sizeof(*fruits) * fruitsCnt);
         }
     }
+    Sleep(5);
+    for (int i = 0; i < del_cntr; i++)
+    {
+        UpdateSpeed();
+    }
+}
+
+void UpdateSpeed()
+{
+    snakeSpeed += 0.02;
 }
