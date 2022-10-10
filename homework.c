@@ -9,6 +9,7 @@
 #define FRAME_RIGHT_X (FRAME_LEFT_X + FRAME_WIDTH)
 
 #define SNACK_BLOCK_SIDE 20
+#define FRUIT_SIZE 20
 
 typedef struct Spoint
 {
@@ -43,7 +44,10 @@ void WinShow(HDC dc);
 void ObjectShow(TObject obj, HDC dc);
 void FrameShow(HDC dc);
 void CheckBoundaries();
-
+void GenerateFruit();
+void AddFruit(float xPos, float yPos);
+BOOL ObjectCollision(TObject o1, TObject o2);
+void DelFruits();
 
 RECT rect;
 // Create our snake
@@ -179,6 +183,8 @@ void SnakeInit()
 void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height, char objType)
 {
     int choose = 0;
+    srand((int)time(NULL));
+
 
     obj->pos = point(xPos, yPos);
     obj->size = point(width, height);
@@ -190,7 +196,6 @@ void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height,
   
     if (objType == 's')
     {
-        srand((int)time(NULL));
         choose = rand() % 4;
         if (choose == 0)
         {
@@ -208,6 +213,11 @@ void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height,
             obj->speed = point(0, -snakeSpeed);
         }
     }
+    else if (objType == 'f')
+    {
+        COLORREF color = RGB(rand() % 255, rand() % 255, rand() % 255);
+        obj->brush = color;
+    }
 }
 
 void WinMove()
@@ -219,6 +229,8 @@ void WinMove()
 
     SnakeControl();
     ObjectMove(snake.parts);
+    GenerateFruit();
+    DelFruits();
 }
 
 void SnakeControl()
@@ -267,6 +279,15 @@ void WinShow(HDC dc)
     
     FrameShow(memDC);
     ObjectShow(*snake.parts, memDC);
+    for (int i = 0; i < fruitsCnt; i++)
+    {
+        ObjectShow(fruits[i], memDC);
+        if (ObjectCollision(fruits[i], *(snake.parts)))
+        {
+            fruits[i].isDel = TRUE;
+        }
+        
+    }
 
     BitBlt(dc, 0, 0, rect.right - rect.left, rect.bottom - rect.top, memDC, 0, 0, SRCCOPY);
     DeleteDC(memDC);
@@ -282,7 +303,18 @@ void ObjectShow(TObject obj, HDC dc)
     SetDCBrushColor(dc, obj.brush);
 
     BOOL(*shape)(HDC, int, int, int, int);
-    shape = Rectangle;
+
+    if (obj.oType == 's')
+    {
+        shape = Rectangle;
+    }
+    else if (obj.oType == 'f')
+    {
+        shape = Ellipse;
+    }
+    else {
+        shape = Rectangle;
+    }
 
     shape(dc, (int)(obj.pos.x), (int)(obj.pos.y),
         (int)(obj.pos.x + obj.size.x), (int)(obj.pos.y + obj.size.y));
@@ -305,5 +337,54 @@ void CheckBoundaries()
         snake.parts->pos.y < FRAME_UPPER_Y || snake.parts->pos.y + snake.parts->size.y > FRAME_LOWER_Y)
     {
         startNewGame = TRUE;
+    }
+}
+
+void GenerateFruit()
+{
+    srand(time(NULL));
+    int xPos = FRAME_LEFT_X + rand() % FRAME_WIDTH;
+    int yPos = FRAME_UPPER_Y + rand() % FRAME_HEIGHT;   
+
+    int k = rand() % 15;
+    if (k == 1)
+    {
+        AddFruit(xPos, yPos);
+    }
+    if (k == 2)
+    {
+        AddFruit(xPos, yPos);
+    }
+}
+
+void AddFruit(float xPos, float yPos)
+{
+    fruitsCnt++;
+    if (fruits = realloc(fruits, sizeof(*fruits) * fruitsCnt))
+    {
+       ObjectInit(fruits + fruitsCnt - 1, xPos, yPos, FRUIT_SIZE, FRUIT_SIZE, 'f');
+    }
+    else
+    {
+        return;
+    }
+}
+
+BOOL ObjectCollision(TObject o1, TObject o2)
+{
+    return ((o1.pos.x + o1.size.x) > o2.pos.x) && (o1.pos.x < (o2.pos.x + o2.size.x)) &&
+        ((o1.pos.y + o1.size.y) > o2.pos.y) && (o1.pos.y < (o2.pos.y + o2.size.y));
+}
+
+void DelFruits()
+{
+    for (int i = 0; i < fruitsCnt; i++)
+    {
+        if (fruits[i].isDel)
+        {
+            fruitsCnt--;
+            fruits[i] = fruits[fruitsCnt];
+            fruits = realloc(fruits, sizeof(*fruits) * fruitsCnt);
+        }
     }
 }
