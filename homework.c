@@ -28,6 +28,7 @@ typedef struct Sobject
     Tpoint speed;
     char oType;
     BOOL isDel;
+    float posChange;
 } TObject, * PObject;
 
 typedef struct SSnake
@@ -47,6 +48,7 @@ void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height,
 void WinMove();
 void SnakeControl();
 void ObjectMove(TObject* obj);
+void TailMove(TObject* obj);
 void WinShow(HDC dc);
 void ObjectShow(TObject obj, HDC dc);
 void FrameShow(HDC dc);
@@ -57,11 +59,11 @@ BOOL ObjectCollision(TObject o1, TObject o2);
 void DelFruits();
 void UpdateSpeed();
 void AddSnakeBlock();
+void ChangeDirections();
 
 // Overall score
 int score = 0;
 int t = 0;
-
 
 RECT rect;
 // Create our snake
@@ -139,12 +141,14 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                 {
                     (fruits + i) -> isDel = TRUE;
                     score++;
+                    AddSnakeBlock();
                 }
             }
            
             WinShow(dc);
             DelFruits();
             CheckBoundaries();
+            ChangeDirections();
         }
     }
     ReleaseDC(hwnd, dc);
@@ -221,6 +225,7 @@ void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height,
     obj->oType = objType;
     obj->isDel = FALSE;
     obj->oType = objType;
+    obj->posChange = 0;
   
     if (objType == 's')
     {
@@ -268,35 +273,70 @@ void WinMove()
 
 void SnakeControl()
 {
- 
+    
     if (GetKeyState('W') < 0)
     {
         snake.parts[0].speed.y = -snakeSpeed;
         snake.parts[0].speed.x = 0;
+        snake.parts[0].posChange = 0;
     }
     if (GetKeyState('S') < 0)
     {
         snake.parts[0].speed.y = snakeSpeed;
         snake.parts[0].speed.x = 0;
+        snake.parts[0].posChange = 0;
 
     }
     if (GetKeyState('A') < 0)
     {
         snake.parts[0].speed.x = -snakeSpeed;
         snake.parts[0].speed.y = 0;
+        snake.parts[0].posChange = 0;
     }
     if (GetKeyState('D') < 0)
     {
         snake.parts[0].speed.x = snakeSpeed;
         snake.parts[0].speed.y = 0;
+        snake.parts[0].posChange = 0;
     }
-
 }
 
 void ObjectMove(TObject* obj)
 {
+    Tpoint pointInitial = point(obj->pos.x, obj->pos.y);
     obj->pos.x += obj->speed.x;
     obj->pos.y += obj->speed.y;
+    Tpoint pointEventual = point(obj->pos.x, obj->pos.y);
+
+    if (obj->speed.x != 0)
+    {
+        obj->posChange += abs(pointInitial.x - pointEventual.x);
+    }
+    else
+    {
+        obj->posChange += abs(pointInitial.y - pointEventual.y);
+    }
+
+}
+
+void TailMove(TObject* obj)
+{
+    switch (FindDestination(snake.parts + snake.length - 2))
+    {
+        case Right:
+            obj->speed = point(snakeSpeed, 0);
+            break;
+        case Left:
+            obj->speed = point(-snakeSpeed, 0);
+            break;
+        case Up:
+            obj->speed = point(0, -snakeSpeed);
+            break;
+        case Down:
+            obj->speed = point(0, snakeSpeed);
+            break;
+    }
+    obj->posChange = 0;
 }
 
 void WinShow(HDC dc)
@@ -327,14 +367,26 @@ void WinShow(HDC dc)
     buf_len = wsprintf(bufferForScore, TEXT("Score = %i"), score);
     TextOut(memDC, 400, 50, bufferForScore, buf_len);
 
+    buf_len = wsprintf(bufferForScore, TEXT("Snake part pos cnange = %i"), (int)snake.parts->posChange);
+    TextOut(memDC, 400, 80, bufferForScore, buf_len);
+
     buf_len = wsprintf(bufferForScore, TEXT("Fruits num = %i"), fruitsCnt);
     TextOut(memDC, 600, 50, bufferForScore, buf_len);
+
+    buf_len = wsprintf(bufferForScore, TEXT("Snake length = %i"), snake.length);
+    TextOut(memDC, 600, 80, bufferForScore, buf_len);
+
+    buf_len = wsprintf(bufferForScore, TEXT("Snake head (x,y) = (%i, %i)"), (int)snake.parts[0].pos.x, (int)snake.parts[0].pos.y);
+    TextOut(memDC, 600, 80, bufferForScore, buf_len);
 
     buf_len = wsprintf(bufferForScore, TEXT("Time = %i"), t);
     TextOut(memDC, 800, 50, bufferForScore, buf_len);
 
     buf_len = wsprintf(bufferForScore, TEXT("Milisecs = %i"), (int)time(NULL) * 1000 + getMiliseconds());
     TextOut(memDC, 950, 50, bufferForScore, buf_len);
+
+    buf_len = wsprintf(bufferForScore, TEXT("Head destination = %i"), (int)FindDestination(snake.parts));
+    TextOut(memDC, 950, 80, bufferForScore, buf_len);
 
     BitBlt(dc, 0, 0, rect.right - rect.left, rect.bottom - rect.top, memDC, 0, 0, SRCCOPY);
     DeleteDC(memDC);
@@ -462,25 +514,23 @@ void AddSnakeBlock()
     snake.length++;
     snake.parts = (TObject*)realloc(snake.parts, snake.length * sizeof(TObject));
 
-    switch (FindDestination(snake.parts))
+    switch (FindDestination(snake.parts + snake.length - 2))
     {
         case Right:
-            snake.parts->speed = prevSpeed;
             ObjectInit(snake.parts + snake.length - 1, xPrevPos - SNACK_BLOCK_SIDE, yPrevPos, SNACK_BLOCK_SIDE, SNACK_BLOCK_SIDE, 't');
             break;
         case Left:
-            snake.parts->speed = prevSpeed;
             ObjectInit(snake.parts + snake.length - 1, xPrevPos + SNACK_BLOCK_SIDE, yPrevPos, SNACK_BLOCK_SIDE, SNACK_BLOCK_SIDE, 't');
             break;
         case Up:
-            snake.parts->speed = prevSpeed;
             ObjectInit(snake.parts + snake.length - 1, xPrevPos, yPrevPos + SNACK_BLOCK_SIDE, SNACK_BLOCK_SIDE, SNACK_BLOCK_SIDE, 't');
             break;
         case Down:
-            snake.parts->speed = prevSpeed;
             ObjectInit(snake.parts + snake.length - 1, xPrevPos, yPrevPos - SNACK_BLOCK_SIDE, SNACK_BLOCK_SIDE, SNACK_BLOCK_SIDE, 't');
             break;
     }
+
+    TailMove(snake.parts + snake.length - 1);
 
 }
 
@@ -511,3 +561,48 @@ int getMiliseconds()
     return (int)timebuffer.millitm; 
 }
 
+void ChangeDirections()
+{
+    for (int i = 0; i < (snake.length - 1); i++)
+    {
+        if (/*snake.parts[i].posChange == snake.parts[i + 1].posChange && */FindDestination(snake.parts + i) != FindDestination(snake.parts + i + 1))
+        {
+            switch (FindDestination(snake.parts + i))
+            {
+                case Right:
+                    if ((int)snake.parts[i].pos.x >= ((int)snake.parts[i + 1].pos.x + SNACK_BLOCK_SIDE))
+                    {
+                        (snake.parts + i + 1)->speed = point(snakeSpeed, 0);
+                        snake.parts[i + 1].pos.y = snake.parts[i].pos.y;
+                        snake.parts[i + 1].pos.x = snake.parts[i].pos.x - SNACK_BLOCK_SIDE;
+                    }
+                    break;
+                case Left:
+                    if (((int)snake.parts[i].pos.x + SNACK_BLOCK_SIDE) <= (int)snake.parts[i + 1].pos.x)
+                    {
+                        (snake.parts + i + 1)->speed = point(-snakeSpeed, 0);
+                        snake.parts[i + 1].pos.y = snake.parts[i].pos.y;
+                        snake.parts[i + 1].pos.x = snake.parts[i].pos.x + SNACK_BLOCK_SIDE;
+                    }
+                    break;
+                case Up:
+                    if ((int)snake.parts[i].pos.y <= ((int)snake.parts[i + 1].pos.y - SNACK_BLOCK_SIDE))
+                    {
+                        (snake.parts + i + 1)->speed = point(0, -snakeSpeed);
+                        snake.parts[i + 1].pos.x = snake.parts[i].pos.x;
+                        snake.parts[i + 1].pos.y = snake.parts[i].pos.y + SNACK_BLOCK_SIDE;
+                    }
+                    break;
+                case Down:
+                    if ((int)snake.parts[i].pos.y >= ((int)snake.parts[i + 1].pos.y + SNACK_BLOCK_SIDE))
+                    {
+                        (snake.parts + i + 1)->speed = point(0, snakeSpeed);
+                        snake.parts[i + 1].pos.x = snake.parts[i].pos.x;
+                        snake.parts[i + 1].pos.y = snake.parts[i].pos.y - SNACK_BLOCK_SIDE;
+                    }
+                    break;
+            }
+        }
+        (snake.parts + i + 1)->posChange = 0;
+    }
+}
