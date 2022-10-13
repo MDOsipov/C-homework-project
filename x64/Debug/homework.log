@@ -1,9 +1,21 @@
 ﻿  homework.c
-C:\masa\С\homework\homework\homework.c(132,15): warning C4244: return: преобразование "WPARAM" в "int", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(353,11): warning C4244: функция: преобразование "time_t" в "unsigned int", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(360,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(360,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(364,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(364,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
-C:\masa\С\homework\homework\homework.c(409,23): warning C4305: +=: усечение из "double" в "float"
+C:\masa\С\homework\homework\homework.c(151,15): warning C4244: return: преобразование "WPARAM" в "int", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(336,88): warning C4013: getMiliseconds: нет определения; предполагается "extern" с возвратом типа "int"
+C:\masa\С\homework\homework\homework.c(404,18): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(404,24): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(404,30): warning C4020: AddFruit: слишком много фактических параметров
+C:\masa\С\homework\homework\homework.c(409,1): warning C4029: объявленный список формальных параметров отличается от объявления
+C:\masa\С\homework\homework\homework.c(453,24): warning C4305: +=: усечение из "double" в "float"
+C:\masa\С\homework\homework\homework.c(465,13): warning C4013: FindDestination: нет определения; предполагается "extern" с возвратом типа "int"
+C:\masa\С\homework\homework\homework.c(469,65): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(469,85): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(473,65): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(473,85): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(477,56): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(477,75): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(481,56): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(481,75): warning C4244: функция: преобразование "int" в "float", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(458,53): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(459,53): warning C4244: инициализация: преобразование "float" в "int", возможна потеря данных
+C:\masa\С\homework\homework\homework.c(505): warning C4715: FindDestination: значение возвращается не при всех путях выполнения
   homework.vcxproj -> C:\masa\С\homework\x64\Debug\homework.exe
