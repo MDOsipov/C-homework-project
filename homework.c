@@ -63,6 +63,8 @@ void AddSnakeBlock();
 void ChangeDirections();
 void CheckSnakeCollision();
 void SyncBlocks();
+void InitTime();
+void PeriodicDeleteFruits();
 
 // Overall score
 int score = 0;
@@ -78,6 +80,9 @@ int fruitsCnt = 0; // The current number of fruits
 BOOL startNewGame = FALSE;
 // Set the snake speed
 float snakeSpeed = 1.5;
+// My time
+int prevTime = 0;
+int curTime = 0;
 
 int collisionCnt = 0;
 
@@ -126,6 +131,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     ShowWindow(hwnd, iCmdShow);
     UpdateWindow(hwnd);
     WinInit();
+    InitTime();
 
     while (1)
     {
@@ -158,7 +164,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
             CheckSnakeCollision();
             DelFruits();
             ChangeDirections();
-
+            PeriodicDeleteFruits();
         }
     }
     ReleaseDC(hwnd, dc);
@@ -739,5 +745,22 @@ void SyncBlocks()
                     break;
             }
         }
+    }
+}
+
+void InitTime() 
+{
+    prevTime = (int)time(NULL);
+    curTime = (int)time(NULL);
+}
+
+void PeriodicDeleteFruits()
+{
+    curTime = (int)time(NULL);
+
+    if (curTime - prevTime > 15)
+    {
+        fruits->isDel = 1;
+        prevTime = curTime;
     }
 }
