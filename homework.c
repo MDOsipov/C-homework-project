@@ -274,6 +274,9 @@ void WinMove()
 {
     if (startNewGame)
     {
+        wchar_t bufferForScore[50];
+        wsprintf(bufferForScore, TEXT("Game over!\n You got a score of %i"), score);
+        MessageBox(NULL, bufferForScore, TEXT("Game over window"), 0);
         WinInit();
     }
 
@@ -295,7 +298,7 @@ void SnakeControl()
     
     if (GetKeyState('W') < 0 && abs(snake.parts[0].destMove) >= SNACK_BLOCK_SIDE)
     {
-        if (prevSpeed.y > 0)
+        if (prevSpeed.y > 0 && snake.length > 1)
         {
             startNewGame = TRUE;
         }
@@ -308,7 +311,7 @@ void SnakeControl()
     }
     else if (GetKeyState('S') < 0 && abs(snake.parts[0].destMove) >= SNACK_BLOCK_SIDE)
     {
-        if (prevSpeed.y < 0)
+        if (prevSpeed.y < 0 && snake.length > 1)
         {
             startNewGame = TRUE;
         }
@@ -321,7 +324,7 @@ void SnakeControl()
     }
     else if (GetKeyState('A') < 0 && abs(snake.parts[0].destMove) >= SNACK_BLOCK_SIDE)
     {
-        if (prevSpeed.x > 0)
+        if (prevSpeed.x > 0 && snake.length > 1)
         {
             startNewGame = TRUE;
         }
@@ -334,7 +337,7 @@ void SnakeControl()
     }
     else if (GetKeyState('D') < 0 && abs(snake.parts[0].destMove) >= SNACK_BLOCK_SIDE)
     {
-        if (prevSpeed.x < 0)
+        if (prevSpeed.x < 0 && snake.length > 1)
         {
             startNewGame = TRUE;
         }
@@ -534,7 +537,7 @@ void GenerateFruit()
 
     if (fruitsCnt == 0)
     {
-        randDefNum = 50;
+        randDefNum = 2;
     }
     else if (fruitsCnt > 0 && fruitsCnt < 3)
     {
@@ -758,9 +761,12 @@ void PeriodicDeleteFruits()
 {
     curTime = (int)time(NULL);
 
-    if (curTime - prevTime > 15)
+    if (fruitsCnt > 0)
     {
-        fruits->isDel = 1;
-        prevTime = curTime;
-    }
+        if (curTime - prevTime > 25)
+        {
+            fruits->isDel = 1;
+            prevTime = curTime;
+        }
+    }   
 }
