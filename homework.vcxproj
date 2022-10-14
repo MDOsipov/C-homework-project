@@ -129,7 +129,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="definitions.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="structs.h" />
     <ClInclude Include="homework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />

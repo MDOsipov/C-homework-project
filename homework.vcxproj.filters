@@ -27,6 +27,12 @@
     <ClInclude Include="homework.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="structs.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="definitions.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="homework.c">

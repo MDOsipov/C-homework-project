@@ -3,88 +3,8 @@
 #include <time.h>
 #include <sys/timeb.h>
 #include <stdio.h>
-
-// Set metrics of the frame
-#define FRAME_WIDTH 800
-#define FRAME_HEIGHT 800
-#define FRAME_UPPER_Y 100
-#define FRAME_LOWER_Y (FRAME_UPPER_Y + FRAME_HEIGHT)
-#define FRAME_LEFT_X 200
-#define FRAME_RIGHT_X (FRAME_LEFT_X + FRAME_WIDTH)
-
-// Set size of objects
-#define SNACK_BLOCK_SIDE 20
-#define FRUIT_SIZE 20
-
-typedef struct Spoint
-{
-    float x, y;
-} Tpoint;
-
-typedef struct Sobject
-{
-    Tpoint pos;
-    Tpoint size;
-    COLORREF brush;
-    Tpoint speed;
-    char oType;
-    BOOL isDel;
-    float destMove;
-} TObject, * PObject;
-
-typedef struct SSnake
-{
-    int length;
-    PObject parts;
-} TSnake;
-
-typedef enum { Up = 1, Down = 2, Right = 3, Left = 4 } Destination;
-
-// Define functions
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-Tpoint point(float x, float y);
-void WinInit();
-void SnakeInit();
-void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height, char objType);
-void WinMove();
-void SnakeControl();
-void ObjectMove(TObject* obj);
-void TailMove(TObject* obj);
-void WinShow(HDC dc);
-void ObjectShow(TObject obj, HDC dc);
-void FrameShow(HDC dc);
-void CheckBoundaries();
-void GenerateFruit();
-void AddFruit(float xPos, float yPos);
-BOOL ObjectCollision(TObject o1, TObject o2);
-void DelFruits();
-void UpdateSpeed();
-void AddSnakeBlock();
-void ChangeDirections();
-void CheckSnakeCollision();
-void SyncBlocks();
-void InitTime();
-void PeriodicDeleteFruits();
-
-// Overall score
-int score = 0;
-int t = 0;
-
-RECT rect;
-// Create our snake
-TSnake snake;
-// Other objects (fruits)
-PObject fruits = NULL;
-int fruitsCnt = 0; // The current number of fruits
-// Start new game flag
-BOOL startNewGame = FALSE;
-// Set the snake speed
-float snakeSpeed = 1.5;
-// My time
-int prevTime = 0;
-int curTime = 0;
-
-int collisionCnt = 0;
+#include "structs.h"
+#include "definitions.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     PSTR szCmdLine, int iCmdShow)
@@ -187,6 +107,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
         GetClientRect(hwnd, &rect);
 
+
         EndPaint(hwnd, &ps);
         return 0;
 
@@ -237,7 +158,7 @@ void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height,
 
     obj->pos = point(xPos, yPos);
     obj->size = point(width, height);
-    obj->brush = RGB(0, 255, 0);
+    obj->brush = RGB(2, 181, 74);
     obj->speed = point(0, 0);
     obj->oType = objType;
     obj->isDel = FALSE;
@@ -440,7 +361,8 @@ void WinShow(HDC dc)
     wchar_t bufferForScore[50];
     wchar_t bufferForSpeed[50];
     int buf_len = 0;
-
+    
+    /*
     buf_len = wsprintf(bufferForScore, TEXT("Score = %i"), score);
     TextOut(memDC, 400, 50, bufferForScore, buf_len);
 
@@ -473,6 +395,7 @@ void WinShow(HDC dc)
 
     buf_len = wsprintf(bufferForScore, TEXT("Head destination = %i"), (int)FindDestination(snake.parts));
     TextOut(memDC, 950, 80, bufferForScore, buf_len);
+    */
 
     BitBlt(dc, 0, 0, rect.right - rect.left, rect.bottom - rect.top, memDC, 0, 0, SRCCOPY);
     DeleteDC(memDC);
