@@ -519,13 +519,32 @@ void CheckBoundaries()
 void GenerateFruit()
 {
     srand((int)time(NULL) * 1000 + getMiliseconds());
-    int xPos = FRAME_LEFT_X + rand() % FRAME_WIDTH;
-    int yPos = FRAME_UPPER_Y + rand() % FRAME_HEIGHT;   
+    int xPos = FRAME_LEFT_X + rand() % (FRAME_WIDTH - FRUIT_SIZE);
+    int yPos = FRAME_UPPER_Y + rand() % (FRAME_HEIGHT - FRUIT_SIZE);
     BOOL check = FALSE;
+    int randDefNum = 150;
 
     Sleep(1);
 
-    int k = rand() % 200;
+    if (fruitsCnt == 0)
+    {
+        randDefNum = 50;
+    }
+    else if (fruitsCnt > 0 && fruitsCnt < 3)
+    {
+        randDefNum = 200;
+    }
+    else if (fruitsCnt >= 3)
+    {
+        randDefNum = 250;
+    }
+    else if (fruitsCnt >= 5)
+    {
+        randDefNum = 450;
+    }
+
+    int k = rand() % randDefNum;
+    
     if (k == 1)
     {
         fruitsCnt++;
