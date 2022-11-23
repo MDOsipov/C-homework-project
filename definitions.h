@@ -29,7 +29,7 @@ int fruitsCnt = 0; // The current number of fruits
 BOOL startNewGame = FALSE;
 // Set the snake speed
 float snakeSpeed = 1.5;
-// My time
+// My timer
 int prevTime = 0;
 int curTime = 0;
 

@@ -1,4 +1,5 @@
-﻿#include <windows.h>
+﻿#define _CRT_SECURE_NO_WARNINGS
+#include <windows.h>
 #include <stdlib.h>
 #include <time.h>
 #include <sys/timeb.h>
@@ -34,7 +35,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         return 0;
     }
     hwnd = CreateWindow(szAppName,                  // window class name
-        TEXT("The Hello Program"), // window caption
+        TEXT("Snake game"), // window caption
         WS_OVERLAPPEDWINDOW,        // window style
         1920 / 2 - 600,              // initial x position
         0,              // initial y position
@@ -65,7 +66,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
         else
         {
             t++;
-            WinMove();
+            WinMove(); 
             for (int i = 0; i < fruitsCnt; i++)
             {
                 if (ObjectCollision(*(fruits + i), *(snake.parts)) && (fruits + i)->isDel != TRUE)
@@ -128,18 +129,19 @@ Tpoint point(float x, float y)
     return pt;
 }
 
+// The start of new game
 void WinInit()
 {
     collisionCnt = 0;
     startNewGame = FALSE;
     fruitsCnt = 0;
     score = 0;
-    if (!fruits)
+    if (fruits)
     {
         free(fruits);
     }
     fruits = NULL;
-    snakeSpeed = 2;
+    snakeSpeed = 1;
     free(snake.parts);
     SnakeInit();
 }
@@ -162,7 +164,6 @@ void ObjectInit(TObject* obj, float xPos, float yPos, float width, float height,
     obj->speed = point(0, 0);
     obj->oType = objType;
     obj->isDel = FALSE;
-    obj->oType = objType;
     obj->destMove = 0;
   
     if (objType == 's')
@@ -209,6 +210,7 @@ void WinMove()
     {
         ObjectMove(snake.parts + i);
     }
+
     GenerateFruit();
 }
 
